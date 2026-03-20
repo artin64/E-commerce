@@ -1,38 +1,55 @@
-# E-Commerce Platform (Multi-Vendor)
+# E-Commerce Multi-Vendor Platform
 
-## Çfarë bën ky aplikacion
-Kjo platformë është një sistem E-Commerce shumë i avancuar dhe multifunksional që lejon shumë shitës të ndryshëm (multi-vendor) të krijojnë dhe menaxhojnë dyqanet e tyre të personalizuara brenda platformës.  
+Sistem i avancuar E-Commerce me arkitekturë të shtresuar (Layered Architecture), Repository Pattern dhe parimet SOLID.
 
-Funksionalitetet kryesore përfshijnë:  
-- Homepage moderne dhe dinamike me produkte, kategori dhe reklama  
-- Panel admin për menaxhimin e dyqanit nga shitësit  
-- Multi-vendor system me izolim të plotë për secilin dyqan  
-- Sistemi i produkteve dhe kategorive, me search dhe advanced filters  
-- Personalizim i plotë i faqes nga admin: layout, theme, ngjyra, stile  
-- Shopping cart dhe sistem pagesash online të sigurta  
-- Panel i blerësit me historikun e porosive, wishlist dhe gift cards  
-- Live Chat dhe AI Chat për asistencë dhe rekomandime  
-- Reviews dhe ratings për produktet  
-- Order tracking dhe notifikime për blerësit  
-- Analytics për shitësit  
-- Siguri e avancuar: autentikim, enkriptim, mbrojtje nga sulme kibernetike  
-- Mobile responsive për desktop, tablet dhe mobile  
-- Super admin panel për menaxhimin e të gjithë shitësve  
+## Teknologjia
+- **Gjuha:** C# (.NET 8)
+- **Ruajtja:** File CSV (Repository Pattern)
+- **Arkitektura:** Layered Architecture + SOLID
 
-## Struktura fillestare e faqes
-- Burger Menu (☰) me Admin Panel  
-- Dashboard për admin për menaxhimin e kategorive, produkteve dhe reklamave  
-- Tema dhe stile të gatshme për personalizim të shpejtë  
-- Sistemi i ID-ve unike dhe QR Code për dyqanet  
+## Struktura e Projektit
 
-## Teknologjitë që do të përdoren
-- **Frontend:** HTML, CSS, JavaScript, (mund të shtohen framework si React/Vue)  
-- **Backend:** Node.js / Express ose Python / Django  
-- **Database:** MySQL, PostgreSQL ose MongoDB  
-- **Sistemi i pagesave:** Stripe / PayPal API  
-- **Live Chat dhe AI Chat:** WebSocket, OpenAI API ose shërbime të tjera AI  
-- **Hosting & Deployment:** GitHub Pages për frontend test, Heroku / Vercel / DigitalOcean për backend  
-- **Tools:** Git, GitHub për version control, Postman për API testing  
+```
+ECommerceProject/
+├── Models/          → Strukturat e të dhënave
+├── Services/        → Logjika e biznesit
+│   └── Interfaces/  → Abstraksionet (ISP)
+├── Data/            → Repository Pattern
+├── UI/              → Ndërfaqja e përdoruesit
+├── docs/            → Dokumentimi
+└── Program.cs       → Inicializim minimal
+```
 
-## Dorëzimi
-- Repository GitHub: [https://github.com/artin64/ecomerce](https://github.com/artin64/ecomerce)
+## Funksionalitetet Kryesore
+
+- **Multi-Vendor System** — shumë shitës me dyqane të izoluara
+- **ID Unike + QR Code** — çdo dyqan ka identitet unik
+- **Shopping Cart** — shportë dinamike me total automatik
+- **Order Management** — porosi me status dhe njoftime
+- **Review & Rating** — vlerësime me yje
+- **Gift Cards** — karta dhurate me kod unik
+- **Analytics** — statistika shitjesh për admin
+- **Advanced Search & Filter** — kërkim me filtra të avancuara
+- **Autentikim i Sigurt** — SHA-256 hashing
+
+## Parimet SOLID
+
+| Parimi | Zbatimi |
+|--------|---------|
+| SRP | Çdo shtresë ka një përgjegjësi të vetme |
+| OCP | `IRepository<T>` lejon zgjerim pa modifikim |
+| LSP | Çdo implementim i `IRepository<T>` është i ndërrueshem |
+| ISP | Interface të ndara për çdo shërbim |
+| DIP | Services varen nga interfaces, jo nga implementime |
+
+## Ekzekutimi
+
+```bash
+cd ECommerceProject
+dotnet run
+```
+
+## Dokumentimi
+
+- [Arkitektura e Projektit](docs/architecture.md)
+- [Diagrami i Klasave UML](docs/class-diagram.md)
