@@ -1,55 +1,56 @@
-# E-Commerce Multi-Vendor Platform
+using Models;
+using Data;
+using Services.Interfaces;
 
-Sistem i avancuar E-Commerce me arkitekturë të shtresuar (Layered Architecture), Repository Pattern dhe parimet SOLID.
+namespace Services;
 
-## Teknologjia
-- **Gjuha:** C# (.NET 8)
-- **Ruajtja:** File CSV (Repository Pattern)
-- **Arkitektura:** Layered Architecture + SOLID
+// DIP: ProductService varet nga IRepository<Product>, jo nga FileRepository konkrete.
+// SRP: Vetëm logjika e biznesit për produkte.
+public class ProductService : IProductService
+{
+    private readonly IRepository<Product> _repository;
 
-## Struktura e Projektit
+    public ProductService(IRepository<Product> repository)
+    {
+        _repository = repository;
+    }
 
-```
-ECommerceProject/
-├── Models/          → Strukturat e të dhënave
-├── Services/        → Logjika e biznesit
-│   └── Interfaces/  → Abstraksionet (ISP)
-├── Data/            → Repository Pattern
-├── UI/              → Ndërfaqja e përdoruesit
-├── docs/            → Dokumentimi
-└── Program.cs       → Inicializim minimal
-```
+    public List<Product> GetAll(string storeId)
+        => _repository.GetAll().Where(p => p.GetStoreId() == storeId).ToList();
 
-## Funksionalitetet Kryesore
+    public Product? GetById(int id) => _repository.GetById(id);
 
-- **Multi-Vendor System** — shumë shitës me dyqane të izoluara
-- **ID Unike + QR Code** — çdo dyqan ka identitet unik
-- **Shopping Cart** — shportë dinamike me total automatik
-- **Order Management** — porosi me status dhe njoftime
-- **Review & Rating** — vlerësime me yje
-- **Gift Cards** — karta dhurate me kod unik
-- **Analytics** — statistika shitjesh për admin
-- **Advanced Search & Filter** — kërkim me filtra të avancuara
-- **Autentikim i Sigurt** — SHA-256 hashing
+    public void AddProduct(Product product)
+    {
+        _repository.Add(product);
+        _repository.Save();
+    }
 
-## Parimet SOLID
+    public void UpdateProduct(Product product)
+    {
+        _repository.Update(product);
+        _repository.Save();
+    }
 
-| Parimi | Zbatimi |
-|--------|---------|
-| SRP | Çdo shtresë ka një përgjegjësi të vetme |
-| OCP | `IRepository<T>` lejon zgjerim pa modifikim |
-| LSP | Çdo implementim i `IRepository<T>` është i ndërrueshem |
-| ISP | Interface të ndara për çdo shërbim |
-| DIP | Services varen nga interfaces, jo nga implementime |
+    public void DeleteProduct(int id)
+    {
+        _repository.Delete(id);
+        _repository.Save();
+    }
 
-## Ekzekutimi
+    public List<Product> Search(string query, string storeId)
+        => GetAll(storeId)
+            .Where(p => p.GetName().Contains(query, StringComparison.OrdinalIgnoreCase)
+                     || p.GetDescription().Contains(query, StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
-```bash
-cd ECommerceProject
-dotnet run
-```
-
-## Dokumentimi
-
-- [Arkitektura e Projektit](docs/architecture.md)
-- [Diagrami i Klasave UML](docs/class-diagram.md)
+    public List<Product> Filter(string storeId, double? minPrice, double? maxPrice, int? categoryId, double? minRating)
+    {
+        var products = GetAll(storeId);
+        if (minPrice.HasValue) products = products.Where(p => p.GetPrice() >= minPrice).ToList();
+        if (maxPrice.HasValue) products = products.Where(p => p.GetPrice() <= maxPrice).ToList();
+        if (categoryId.HasValue) products = products.Where(p => p.GetCategoryId() == categoryId).ToList();
+        if (minRating.HasValue) products = products.Where(p => p.GetRating() >= minRating).ToList();
+        return products;
+    }
+}
