@@ -1,0 +1,12 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+
+# Node modules (nëse përdoret Node.js)
+node_modules/
+
+# Logs
+npm-debug.log
