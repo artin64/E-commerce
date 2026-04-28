@@ -1,12 +1,5 @@
-# OS files
-.DS_Store
-Thumbs.db
-
-# Editor folders
-.vscode/
-
-# Node modules (nëse përdoret Node.js)
+bin/
+obj/
+.dotnet/
+.vs/
 node_modules/
-
-# Logs
-npm-debug.log
