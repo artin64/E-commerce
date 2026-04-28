@@ -1,166 +1,134 @@
-# Demo Plan — NexaMarket Commerce Cloud
+# Demo Plan — Multi-Vendor E-Commerce Platform
 
 ## 1. Titulli i projektit
 
-**NexaMarket Commerce Cloud**
+**Multi-Vendor E-Commerce Platform**
 
-Platformë multi-vendor e-commerce ku shumë shitës mund të menaxhojnë dyqanet e tyre të veçanta brenda një sistemi të vetëm, me storefront modern dhe seller studio të izoluar për secilin vendor.
+Platformë e-commerce me arkitekturë 4-shtresore që lejon menaxhimin e plotë të produkteve, dyqaneve, porosive dhe përdoruesve, e ndërtuar me C# .NET 8 dhe React + TypeScript.
+
+---
 
 ## 2. Problemi që zgjidh
 
-Problemi real që zgjidh ky projekt është se shitësit e vegjël ose ekipet që duan të shesin online shpesh kanë dy vështirësi:
-
-- nuk kanë një sistem të vetëm ku mund të menaxhojnë dyqanin shpejt
-- ndryshimet në produkte, promo dhe renditje shpesh janë të ngadalta ose konfuze
+Shitësit e vegjël dhe bizneset nuk kanë një sistem të centralizuar dhe të strukturuar për të menaxhuar katalogun e produkteve, dyqanet dhe porositë në një vend të vetëm.
 
 Ky projekt e zgjidh këtë duke ofruar:
 
-- panel të qartë për shitësin
-- storefront të strukturuar për blerësin
-- izolim të plotë të të dhënave për secilin shop
-- flow të drejtpërdrejtë nga menaxhimi i katalogut te rezultati live në faqe
+- menaxhim të plotë CRUD për Products, Stores, Orders dhe Users
+- arkitekturë të qartë 4-shtresore (Models → Data → Services → UI)
+- sistem kërkimi dhe filtrimi të produkteve
+- statistika të shitjeve dhe aktivitetit
+- trajtim të gabimeve dhe validim në çdo shtresë
+
+---
 
 ## 3. Përdoruesit kryesorë
 
-Përdoruesit kryesorë të sistemit janë:
+- **Admin / Shitësi** — menaxhon produktet, dyqanet dhe porositë përmes panel-it
+- **Blerësi** — kërkon produkte, filtron dhe sheh rezultate të sakta
+- **Super Admin** — kontrollon të gjithë platformën (planifikuar për versionin e ardhshëm)
 
-- **shitësi / vendor-i**
-  - menaxhon produktet
-  - menaxhon fushatat promocionale
-  - kontrollon stokun dhe strukturën e katalogut
-
-- **blerësi**
-  - kërkon produkte
-  - filtron sipas kategorisë dhe stokut
-  - shton produkte në shportë
-  - sheh totalin e përditësuar automatikisht
-
-- **super admin** në versionin e plotë
-  - do të menaxhojë vendorët dhe politikat globale të platformës
+---
 
 ## 4. Flow-i që do ta demonstroj live
 
-Flow-i kryesor që do ta demonstroj është:
+**Flow kryesor:**
 
-`seller studio -> CRUD produkti -> storefront -> search/filter -> add to cart -> total quote`
+`Admin Panel → shto produkt → modifiko produkt → kërkim + filtër → rezultat live`
 
-Pse e zgjodha pikërisht këtë flow:
+**Pse e zgjodha pikërisht këtë:**
 
-- tregon qartë vlerën e platformës
-- lidh anën e shitësit me anën e blerësit
+- tregon qartë vlerën e arkitekturës 4-shtresore në praktikë
+- lidh anën e admin-it me anën e blerësit
+- demonstron funksionalitet real, jo vetëm UI statike
 - është i kuptueshëm menjëherë gjatë prezantimit
-- demonstron funksionalitet real, jo vetëm UI
-- tregon që sistemi është multi-vendor dhe i izoluar
+- mbulon dy sprint-e të punës reale
+
+---
 
 ## 5. Një problem real që e kam zgjidhur
 
-**Problemi**
+**Problemi:**
 
-Në projekte e-commerce me shumë pjesë, demo shpesh bëhet konfuz sepse ka shumë ekrane, shumë ide, por pak flow real që lidhet nga fillimi në fund.
+Gjatë implementimit të Repository Pattern, operacionet CRUD nuk ishin të izoluara siç duhet — logjika e biznesit ishte e përzier me aksesin e të dhënave, duke e bërë sistemin të vështirë për testim.
 
-**Ku ishte problemi**
+**Ku ishte problemi:**
 
-Problemi ishte te mungesa e një “vertical slice” të qartë që lidh:
+Në shtresën `Data` dhe `Services` — metodat e shërbimit po akseson drejtpërdrejt modelet pa kaluar nëpër repository interface.
 
-- menaxhimin e katalogut nga shitësi
-- shfaqjen e rezultateve te blerësi
-- llogaritjen e rezultateve reale në shportë
+**Si e zgjidha:**
 
-**Si e zgjidha**
+E ristrukturova duke zbatuar Repository Pattern me interface të qartë (`IProductRepository`) dhe InMemory implementim për testim. Kjo lejoi shkrimin e 17 unit testeve xUnit të izoluar plotësisht nga databaza, duke verifikuar CRUD-in, validimin dhe logjikën e biznesit pa dependencë externe.
 
-E strukturova projektin rreth një flow-i të vetëm, por të fortë:
-
-- backend në `C# / ASP.NET Core`
-- frontend me `TypeScript` source dhe bundle gati për demo
-- dy vendorë të seed-uar për të treguar izolimin e store-ve
-- kërkim dhe filtra funksionalë
-- CRUD për produkte dhe campaign cards
-- cart quote i llogaritur nga backend-i
-
-Kjo e kthen projektin nga “shumë ide” në “një demo profesionale që funksionon live”.
+---
 
 ## 6. Çka mbetet ende e dobët
 
-Pjesa që ende nuk është aq e fortë sa duhet është:
+Pjesa që ende nuk është aq e fortë sa duhet është **frontend-i React**:
 
-- nuk ka ende databazë persistente
-- nuk ka autentikim real dhe role të plota
-- pagesat janë ende në nivel demo, jo gateway real
-- nuk ka upload real për imazhe
-- marketplace i themes/plugins është vetëm pjesë e roadmap-it
+- disa komponentë kanë nevojë për polish shtesë në UI/UX
+- nuk ka autentikim real me role të plota ende
+- statistikat janë funksionale por vizualizimi mund të jetë më i detajuar
+- nuk ka databazë persistente — të dhënat ruhen in-memory
 
-Kjo pjesë do të ishte hapi tjetër pas stabilizimit të flow-it kryesor.
+Kjo është pjesa e radhës pas stabilizimit të flow-it kryesor.
+
+---
 
 ## 7. Struktura e prezantimit (5–7 min)
 
-### Hyrja
-
+### Hyrja (1 min)
 - prezantoj emrin e projektit
-- shpjegoj çfarë problemi zgjidh
-- tregoj për kë është platforma
+- shpjegoj çfarë problemi real zgjidh
+- tregoj arkitekturën: 4 shtresa, Repository Pattern, SOLID
 
-### Demo live
+### Demo live (3 min)
+- hap aplikacionin
+- shto një produkt të ri nga admin panel
+- modifiko atë produkt
+- kalo te frontend — bëj kërkim dhe filtrim
+- trego rezultatin live
+- trego statistikat
 
-- hap storefront-in
-- tregoj vendor switch
-- bëj search dhe filter
-- shtoj produkte në cart
-- tregoj totalin automatik
-- kaloj te seller studio
-- editoj një produkt ose campaign
-- rikthehem te storefront dhe tregoj ndryshimin live
+### Shpjegimi teknik (1 min)
+- backend me `ASP.NET Core .NET 8`
+- frontend me `React + TypeScript + Vite`
+- 4-layer architecture: Models → Data → Services → UI
+- Repository Pattern me interface
+- 17 unit teste xUnit
 
-### Shpjegimi teknik
+### Problemi + zgjidhja (30 sek)
+- problemi: logjika e biznesit e përzier me aksesin e të dhënave
+- zgjidhja: Repository Pattern + InMemory për testim të izoluar
 
-- backend është ndërtuar me `ASP.NET Core`
-- frontend është ndërtuar me `TypeScript`
-- sistemi është modeluar si multi-vendor me izolim sipas `vendorId`
-- llogaritja e cart-it bëhet nga backend-i
-
-### Problemi + zgjidhja
-
-- problemi: demo e paqartë dhe pa flow real
-- zgjidhja: vertical slice i qartë nga admin te storefront
-
-### Mbyllja
-
+### Mbyllja (30 sek)
 - theksoj çfarë funksionon sot
 - tregoj çfarë mbetet për përmirësim
-- përfundoj me arsyen pse ky projekt mund të rritet në platformë të plotë SaaS
+- platformë e gatshme për t'u zgjeruar me autentikim real, DB persistente dhe frontend të plotë
 
-## 8. Demo Readiness
+---
 
-Për ta pasur prezantimin pa konfuzion, do të ndjek këtë rend:
+## 8. Demo Readiness — Rrjedha e prezantimit
 
-1. hyrja e shkurtër
-2. storefront
-3. search/filter
-4. cart
-5. seller studio
-6. edit live
-7. vendor switch
+Rendi i saktë i demo-s:
+
+1. hyrja e shkurtër (projekti + problemi)
+2. admin panel — shto produkt
+3. admin panel — modifiko produkt
+4. frontend — kërkim + filtër
+5. rezultati live në UI
+6. statistikat
+7. shpjegimi teknik i arkitekturës
 8. mbyllja
+
+---
 
 ## 9. Plan B
 
 Nëse diçka nuk funksionon live:
 
-- do të përdor README si orientim të shpejtë
-- do të tregoj fillimisht seller studio sepse është pjesa më e kontrollueshme
-- do të përdor flow-in e përgatitur me produkte seed
-- do të shpjegoj logjikën nga kodi dhe dokumentimi në vend të një hapi live
-- mund të tregoj edhe vetëm ndryshimin e një produkti dhe reflektimin në storefront, si demo e shkurtër por e fortë
-
-## 10. Çfarë duhet të dorëzoj
-
-- linkun e GitHub repo
-- këtë file: `docs/demo-plan.md`
-
-## 11. Mesazhi kryesor i demos
-
-Ky projekt tregon që:
-
-- e kuptoj qartë çfarë po ndërtoj
-- di të zgjedh çfarë vlen të prezantohet
-- di ta shpjegoj sistemin në mënyrë profesionale
-- kam përgatitur projektin për një demo të fokusuar, moderne dhe bindëse
+- do të përdor **README.md** si orientim të shpejtë
+- do të tregoj direkt **unit testet** që kalojnë — provon që logjika funksionon
+- do të tregoj **kodin e arkitekturës** (IProductRepository, ServiceLayer) si shpjegim teknik
+- do të shpjegoj flow-in nga dokumentimi ekzistues në `docs/`
+- fallback i sigurt: trego `ConsoleMenu.cs` me CRUD funksional si provë e logjikës
